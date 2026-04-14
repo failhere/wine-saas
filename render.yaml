@@ -14,21 +14,22 @@ services:
         value: change-me-in-render
       - key: FRONTEND_ORIGIN
         fromService:
-          type: static
+          type: web
           name: wine-frontend
           envVarKey: RENDER_EXTERNAL_URL
 
-  - type: static
-    name: wine-frontend
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: wine-backend
-          envVarKey: RENDER_EXTERNAL_URL
+  - type: web
+  name: wine-frontend
+  runtime: node
+  rootDir: frontend
+  buildCommand: npm install && npm run build
+  startCommand: npx serve -s dist -l $PORT
+  envVars:
+    - key: VITE_API_URL
+      fromService:
+        type: web
+        name: wine-backend
+        envVarKey: RENDER_EXTERNAL_URL
 
 databases:
   - name: wine-db
