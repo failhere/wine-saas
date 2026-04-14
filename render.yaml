@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: wine-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wine-db
+          property: connectionString
+      - key: SECRET_KEY
+        value: change-me-in-render
+      - key: FRONTEND_ORIGIN
+        fromService:
+          type: static
+          name: wine-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: static
+    name: wine-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: wine-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: wine-db
+    plan: free
