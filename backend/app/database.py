@@ -11,8 +11,8 @@ elif DATABASE_URL.startswith("postgresql://"):
 
 engine = create_engine(
     DATABASE_URL,
-    future=True,
     pool_pre_ping=True,
+    future=True,
 )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
