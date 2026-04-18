@@ -9,13 +9,11 @@ from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
 from .schemas import ApiStatus
 
+app = FastAPI(title="Wine Starter API", version="1.0.0")
+
 @app.on_event("startup")
 def startup():
-    from app.database import engine
-    from app.database import Base
     Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="Wine Starter API", version="1.0.0")
 
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
 
